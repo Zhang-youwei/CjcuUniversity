@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using CjcuUniversity.DAL;
 using CjcuUniversity.Models;
+using PagedList;
 
 namespace CjcuUniversity.Controllers
 {
@@ -16,9 +17,49 @@ namespace CjcuUniversity.Controllers
         private SchoolContext db = new SchoolContext();
 
         // GET: Student
-        public ActionResult Index()
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(db.Students.ToList());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var students = from s in db.Students
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(s => s.LastName.Contains(searchString)
+                                       || s.FirstMidName.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.LastName);
+                    break;
+                case "Date":
+                    students = students.OrderBy(s => s.EnrollmentDate);
+                    break;
+                case "date_desc":
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
+                    break;
+                default:  // Name ascending 
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(students.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Student/Details/5
@@ -65,7 +106,7 @@ namespace CjcuUniversity.Controllers
             }
             return View(student);
         }
-        
+
         // GET: Student/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -105,7 +146,7 @@ namespace CjcuUniversity.Controllers
                 catch (DataException /* dex */)
                 {
                     //Log the error (uncomment dex variable name and add a line here to write a log.
-                    ModelState.AddModelError("", "無法修改, 請再試一次!若持續錯誤, 請洽詢系統管理者! ");
+                    ModelState.AddModelError("", "無法修改, 請再試一次! 若持續錯誤, 請洽詢系統管理者! ");
                 }
             }
             return View(studentToUpdate);
@@ -120,7 +161,7 @@ namespace CjcuUniversity.Controllers
             }
             if (saveChangesError.GetValueOrDefault())
             {
-                ViewBag.ErrorMessage = "無法刪除, 請再試一次!若持續錯誤, 請洽詢系統管理者! ";
+                ViewBag.ErrorMessage = "無法刪除, 請再試一次! 若持續錯誤, 請洽詢系統管理者! ";
             }
             Student student = db.Students.Find(id);
             if (student == null)
@@ -148,7 +189,6 @@ namespace CjcuUniversity.Controllers
             }
             return RedirectToAction("Index");
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

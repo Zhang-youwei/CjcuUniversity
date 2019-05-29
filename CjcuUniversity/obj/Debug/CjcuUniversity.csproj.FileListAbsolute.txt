@@ -275,3 +275,5 @@ C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\bin\Page
 C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\bin\PagedList.xml
 C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\bin\PagedList.Mvc.xml
 C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\obj\Debug\CjcuUniversity.csprojAssemblyReference.cache
+C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\obj\Debug\CjcuUniversity.Migrations.InitialCreate.resources
+C:\Users\CJCUTW\Source\Repos\Zhang-youwei\CjcuUniversity\CjcuUniversity\obj\Debug\CjcuUniversity.csproj.GenerateResource.cache
